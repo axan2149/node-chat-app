@@ -24,3 +24,9 @@ typings/
 *.tgz
 .yarn-integrity
 .env
+.idea/jsLibraryMappings.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/node-chat-app.iml
+.idea/watcherTasks.xml
+.idea/workspace.xml
