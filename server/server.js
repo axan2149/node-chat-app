@@ -9,6 +9,8 @@ const socketIO = require('socket.io');
 const publicPath = path.join(__dirname,'../public');
 const port = process.env.PORT || 3000;
 
+const {generateMessage} = require('./utils/message');
+
 var app = express();
 var server = http.createServer(app);
 var io = socketIO(server);
@@ -20,31 +22,31 @@ io.on('connection', (socket) => {
     "use strict";
     console.log('New User Connected');
 
-    socket.emit('newEmail',{
-        from: 'mike@example.com',
-        text: "Hey. What's going on",
-        createdAt: 123
-    });
-    
-       
-    socket.on('createEmail', (newEmail) => {
-       console.log('createEmail', newEmail);
-    });
+    socket.emit('newMessage',generateMessage('Admin','Welcome to the chat app'));
+
+    socket.broadcast.emit('newMessage',generateMessage('Admin', 'New User joined'));
+
+
     socket.on('disconnect', () =>{
         console.log('Client Disconnected');
     });
     
     //chat app
-    socket.emit('newMessage', {
-        from: 'Joe',
-        text: 'Hey guys',
-        createdAt: 123
-    });
+
+
     
     socket.on('createMessage', (message) => {
         console.log(message);
-    })
-    
+        io.emit('newMessage', generateMessage(message.from, message.text));
+        // socket.broadcast.emit('newMessage', {
+        //     from: message.from,
+        //     text: message.text,
+        //     createdAt: new Date().getTime()
+        // });
+
+    });
+
+
 });
 
 server.listen(port, () =>{
